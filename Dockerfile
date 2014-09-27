@@ -9,7 +9,7 @@ ENV HOME /
 # System update
 RUN apt-get -qq update
 RUN DEBIAN_FRONTEND=noninteractive apt-get -qqy install wget libyaml-0-2 \
-    libexpat1 erlang-nox python-jinja2
+    libexpat1 erlang-nox python-jinja2 ssl-cert
 
 # ejabberd
 RUN wget -q -O /tmp/ejabberd-installer.run "http://www.process-one.net/downloads/downloads-action.php?file=/ejabberd/14.07/ejabberd-14.07-linux-x86_64-installer.run"
@@ -20,6 +20,7 @@ RUN /tmp/ejabberd-installer.run --mode unattended --prefix /opt/ejabberd --admin
 ADD ./ejabberd.yml.tpl /opt/ejabberd/conf/ejabberd.yml.tpl
 ADD ./ejabberdctl.cfg /opt/ejabberd/conf/ejabberdctl.cfg
 RUN sed -i "s/ejabberd.cfg/ejabberd.yml/" /opt/ejabberd/bin/ejabberdctl
+RUN mkdir /opt/ejabberd/ssl
 
 # add ejabberd user and group
 RUN groupadd -r ejabberd \
@@ -31,6 +32,10 @@ RUN sed -i "s/root/ejabberd/g" /opt/ejabberd/bin/ejabberdctl
 # add runit script
 RUN mkdir /etc/service/ejabberd
 ADD ejabberd.sh /etc/service/ejabberd/run
+
+# add ssl cert gen script
+RUN mkdir -p /etc/my_init.d
+ADD 01_regen_ssl_cert.sh /etc/my_init.d/01_regen_ssl_cert.sh
 
 # Clean up when done.
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*

@@ -58,6 +58,21 @@ ADD ./ejabberd.yml.tpl /opt/ejabberd/conf/ejabberd.yml.tpl
 
 If you need root privileges switch to `USER root` and go back to `USER ejabberd` if you're done.
 
+## TLS
+
+TLS is enabled by default. If you don't provide your own certificate this image generates a self-signed snaikoil certificate on boot. If you want to use your own certifcate use the `/opt/ejabberd/ssl` export and copy your cert and key into `cert.pem`.
+
+```
+$ mkdir -p /tmp/ejabberd/ssl
+$ touch /tmp/ejabberd/ssl/cert.pem
+$ cat yourcert.crt >> /tmp/ejabberd/ssl/cert.pem
+$ cat yourcert.key >> /tmp/ejabberd/ssl/cert.pem
+```
+
+```
+$ docker run -i -P -v /tmp/ejabberd/ssl:/opt/ejabberd/ssl rroemhild/ejabberd
+```
+
 ## Environment variables / Runtime configuration
 
 You can additionally provide extra runtime configuration in a downstream image by replacing the config template `ejabberd.yml.tpl` with one based on this image's template and include extra interpolation of environment variables. The template is parsed by Jinja2 with the runtime environment (equivalent to Python's `os.environ` available as `env`).
