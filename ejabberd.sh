@@ -128,5 +128,5 @@ file_exist ${SSLCERT_HOST} \
   || make_domain_snakeoil_certificate
 
 
-## run ejabberd
-exec ${EJABBERDCTL} "$@"
+# run ejabberd
+exec /sbin/setuser ejabberd ${EJABBERDCTL} "live" 2>&1

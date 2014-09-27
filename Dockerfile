@@ -1,11 +1,12 @@
 # Ejabberd 14.07
 
-FROM ubuntu:14.04
+FROM phusion/baseimage:0.9.13
 
 MAINTAINER Rafael Römhild <rafael@roemhild.de>
 
+ENV HOME /
+
 # System update
-RUN rm /etc/apt/sources.list.d/proposed.list
 RUN apt-get -qq update
 RUN DEBIAN_FRONTEND=noninteractive apt-get -qqy install wget libyaml-0-2 \
     libexpat1 erlang-nox python-jinja2
@@ -20,22 +21,20 @@ ADD ./ejabberd.yml.tpl /opt/ejabberd/conf/ejabberd.yml.tpl
 ADD ./ejabberdctl.cfg /opt/ejabberd/conf/ejabberdctl.cfg
 RUN sed -i "s/ejabberd.cfg/ejabberd.yml/" /opt/ejabberd/bin/ejabberdctl
 
-# wrapper for setting config on disk from environment
-# allows setting things like XMPP domain at runtime
-ADD ./run /opt/ejabberd/bin/run
-
-# Add ejabberd user and group
+# add ejabberd user and group
 RUN groupadd -r ejabberd \
     && useradd -r -g ejabberd -d /opt/ejabberd -s /usr/sbin/nologin ejabberd
 RUN mkdir /opt/ejabberd/ssl
 RUN chown -R ejabberd:ejabberd /opt/ejabberd
 RUN sed -i "s/root/ejabberd/g" /opt/ejabberd/bin/ejabberdctl
 
+# add runit script
+RUN mkdir /etc/service/ejabberd
+ADD ejabberd.sh /etc/service/ejabberd/run
+
 # Clean up when done.
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-USER ejabberd
 VOLUME ["/opt/ejabberd/database", "/opt/ejabberd/ssl"]
 EXPOSE 5222 5269 5280
-CMD ["live"]
-ENTRYPOINT ["/opt/ejabberd/bin/run"]
+CMD ["/sbin/my_init"]
