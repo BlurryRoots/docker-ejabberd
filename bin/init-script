@@ -1,0 +1,37 @@
+# /root/init-script for docker-ejabber -*- shell-script -*-
+
+readonly HOSTNAME=$(hostname -f)
+readonly ERLANGCOOKIEFILE="/opt/ejabberd/.erlang.cookie"
+
+readonly EJABBERDUSER="ejabberd"
+readonly EJABBERDCTL="/opt/ejabberd/bin/ejabberdctl"
+readonly CONFIGFILE="/opt/ejabberd/conf/ejabberd.yml"
+readonly CONFIGTEMPLATE="/opt/ejabberd/conf/ejabberd.yml.tpl"
+readonly CTLCONFIGFILE="/opt/ejabberd/conf/ejabberdctl.cfg"
+
+readonly SSLCERTHOST="/opt/ejabberd/ssl/host.pem"
+readonly SSLCERTDOMAIN="/opt/ejabberd/ssl/xmpp_domain.pem"
+
+
+is_set() {
+    local var=$1
+
+    [[ -n $var ]]
+}
+
+
+file_exist() {
+    local file=$1
+
+    [[ -e $file ]]
+}
+
+
+is_true() {
+    local var=${1,,}
+    local choices=("yes" "1" "y" "true")
+    for ((i=0;i < ${#choices[@]};i++)) {
+        [[ "${choices[i]}" == $var ]] && return 0
+    }
+    return 1
+}
