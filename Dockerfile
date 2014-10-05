@@ -1,6 +1,6 @@
 # Ejabberd 14.07
 
-FROM phusion/baseimage:0.9.14
+FROM phusion/baseimage:0.9.15
 
 MAINTAINER Rafael Römhild <rafael@roemhild.de>
 
