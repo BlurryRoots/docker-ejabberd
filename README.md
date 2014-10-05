@@ -2,7 +2,7 @@
 
 [Ejabberd][ejabberd] server version 14.07 with SSL, internal and anonymous auth enabled by default. To control the XMPP server, register an admin user 'admin@\<domain\>' with your prefered XMPP client. You can change the default domain `localhost` and other settings through [environment variables](#environment-variables-runtime-configuration).
 
-This branch is base on the [phusion-baseimage][phusion-baseimage] and tagged as `phusion` on the docker registry.
+This branch is based on the [phusion-baseimage][phusion-baseimage].
 
 [ejabberd]: http://ejabberd.im
 [phusion-baseimage]: https://github.com/phusion/baseimage-docker
