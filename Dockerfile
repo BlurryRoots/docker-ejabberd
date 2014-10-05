@@ -4,7 +4,7 @@ FROM phusion/baseimage:0.9.14
 
 MAINTAINER Rafael Römhild <rafael@roemhild.de>
 
-ENV HOME /
+ENV HOME /opt/ejabberd
 
 # System update
 RUN apt-get -qq update
